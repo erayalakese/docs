@@ -1,58 +1,328 @@
 {
-  "openapi": "3.0.1",
+  "openapi": "3.0.0",
   "info": {
-    "title": "OpenAPI Plant Store",
-    "description": "A sample API that uses a plant store as an example to demonstrate features in the OpenAPI specification",
-    "license": {
-      "name": "MIT"
-    },
+    "title": "FilesOnFly API",
     "version": "1.0.0"
   },
   "servers": [
     {
-      "url": "http://sandbox.mintlify.com"
+      "url": "http://{{base_url}}"
     }
   ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  },
   "security": [
     {
       "bearerAuth": []
     }
   ],
+  "tags": [
+    {
+      "name": "User"
+    },
+    {
+      "name": "Storage"
+    },
+    {
+      "name": "File"
+    },
+    {
+      "name": "Pages"
+    }
+  ],
   "paths": {
-    "/plants": {
-      "get": {
-        "description": "Returns all plants from the system that the user has access to",
-        "parameters": [
-          {
-            "name": "limit",
-            "in": "query",
-            "description": "The maximum number of results to return",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
+    "/user/create": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "summary": "User Create",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "email": ""
+                }
+              }
             }
           }
-        ],
+        },
         "responses": {
           "200": {
-            "description": "Plant response",
+            "description": "OK",
+            "headers": {
+              "Content-Type": {
+                "schema": {
+                  "type": "string",
+                  "example": "application/json"
+                }
+              }
+            },
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Plant"
-                  }
+                  "type": "object"
+                },
+                "example": {
+                  "userId": 1
                 }
               }
             }
           },
-          "400": {
-            "description": "Unexpected error",
+          "500": {
+            "description": "Internal Server Error",
+            "headers": {
+              "Content-Type": {
+                "schema": {
+                  "type": "string",
+                  "example": "application/json"
+                }
+              }
+            },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "type": "object"
+                },
+                "example": {
+                  "userId": null
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/storage/create": {
+      "post": {
+        "tags": [
+          "Storage"
+        ],
+        "summary": "Storage Create",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "example": {
+                  "user_id": 1,
+                  "name": "Storage Name"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Content-Type": {
+                "schema": {
+                  "type": "string",
+                  "example": "application/json"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": {
+                  "storage_id": 1,
+                  "storage_name": "Storage Name"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "headers": {
+              "Content-Type": {
+                "schema": {
+                  "type": "string",
+                  "example": "application/json"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": {
+                  "storage_id": null
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/storage/delete": {
+      "delete": {
+        "tags": [
+          "Storage"
+        ],
+        "summary": "Storage Delete",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Content-Type": {
+                "schema": {
+                  "type": "string",
+                  "example": "application/json"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": {
+                  "success": true,
+                  "storage_id": 1
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "headers": {
+              "Content-Type": {
+                "schema": {
+                  "type": "string",
+                  "example": "application/json"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": {
+                  "success": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/storage/{id}": {
+      "get": {
+        "tags": [
+          "Storage"
+        ],
+        "summary": "Get Storage",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Content-Type": {
+                "schema": {
+                  "type": "string",
+                  "example": "application/json"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": {
+                  "id": 123,
+                  "name": "Storage Name",
+                  "created_at": "20231306",
+                  "status": "active",
+                  "used_space_mb": 123
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "headers": {
+              "Content-Type": {
+                "schema": {
+                  "type": "string",
+                  "example": "application/json"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": {
+                  "status": false,
+                  "error": "Storage Not Found"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/storage/{id}/api-keys": {
+      "get": {
+        "tags": [
+          "Storage"
+        ],
+        "summary": "API Keys",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Content-Type": {
+                "schema": {
+                  "type": "string",
+                  "example": "application/json"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": {
+                  "id": 123,
+                  "api_key": "APIKEYHERE",
+                  "created_at": "20231306"
                 }
               }
             }
@@ -60,135 +330,380 @@
         }
       },
       "post": {
-        "description": "Creates a new plant in the store",
+        "tags": [
+          "Storage"
+        ],
+        "summary": "Refresh API Keys",
         "requestBody": {
-          "description": "Plant to add to the store",
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/NewPlant"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "plant response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Plant"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "unexpected error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
+                "type": "object",
+                "example": {
+                  "refresh": true
                 }
               }
             }
           }
-        }
-      }
-    },
-    "/plants/{id}": {
-      "delete": {
-        "description": "Deletes a single plant based on the ID supplied",
+        },
         "parameters": [
           {
             "name": "id",
             "in": "path",
-            "description": "ID of plant to delete",
-            "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
+              "type": "string"
+            },
+            "required": true
           }
         ],
         "responses": {
-          "204": {
-            "description": "Plant deleted",
-            "content": {}
-          },
-          "400": {
-            "description": "unexpected error",
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Content-Type": {
+                "schema": {
+                  "type": "string",
+                  "example": "application/json"
+                }
+              }
+            },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "type": "object"
+                },
+                "examples": {
+                  "example-0": {
+                    "summary": "API Keys Refreshed",
+                    "value": {
+                      "id": 123,
+                      "api_key": "NEW_APIKEYHERE",
+                      "refreshed": true,
+                      "created_at": "20231306"
+                    }
+                  },
+                  "example-1": {
+                    "summary": "API Keys NOT Refreshed",
+                    "value": {
+                      "id": 123,
+                      "api_key": "EXISTING_APIKEYHERE",
+                      "refreshed": false,
+                      "created_at": "20231306"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "headers": {
+              "Content-Type": {
+                "schema": {
+                  "type": "string",
+                  "example": "application/json"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": {
+                  "status": false
                 }
               }
             }
           }
         }
       }
-    }
-  },
-  "components": {
-    "schemas": {
-      "Plant": {
-        "required": [
-          "name"
+    },
+    "/file/{id}": {
+      "get": {
+        "tags": [
+          "File"
         ],
-        "type": "object",
-        "properties": {
-          "name": {
-            "description": "The name of the plant",
-            "type": "string"
-          },
-          "tag": {
-            "description": "Tag to specify the type",
-            "type": "string"
+        "summary": "Get File",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
           }
-        }
-      },
-      "NewPlant": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/Plant"
-          },
-          {
-            "required": [
-              "id"
-            ],
-            "type": "object",
-            "properties": {
-              "id": {
-                "description": "Identification number of the plant",
-                "type": "integer",
-                "format": "int64"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Content-Type": {
+                "schema": {
+                  "type": "string",
+                  "example": "application/json"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": {
+                  "_metadata": {
+                    "file_name": "logo.png",
+                    "path": "/static/files/",
+                    "ext": ".png"
+                  },
+                  "id": 123,
+                  "name": "Storage Name",
+                  "created_at": "20231306",
+                  "status": "active",
+                  "used_space_mb": 123
+                }
               }
             }
-          }
-        ]
-      },
-      "Error": {
-        "required": [
-          "error",
-          "message"
-        ],
-        "type": "object",
-        "properties": {
-          "error": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "message": {
-            "type": "string"
           }
         }
       }
     },
-    "securitySchemes": {
-      "bearerAuth": {
-        "type": "http",
-        "scheme": "bearer"
+    "/file/search": {
+      "get": {
+        "tags": [
+          "File"
+        ],
+        "summary": "Search File",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Query to search within file names"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Content-Type": {
+                "schema": {
+                  "type": "string",
+                  "example": "application/json"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": [
+                  {
+                    "_metadata": {
+                      "file_name": "logo.png",
+                      "path": "/static/files/",
+                      "ext": ".png"
+                    },
+                    "id": 123,
+                    "name": "Storage Name",
+                    "created_at": "20231306",
+                    "status": "active",
+                    "used_space_mb": 123
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/file/upload": {
+      "put": {
+        "tags": [
+          "File"
+        ],
+        "summary": "File Upload",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "description": "File to upload",
+                    "format": "binary"
+                  },
+                  "file_name": {
+                    "type": "string",
+                    "description": "e.g. logo.png"
+                  },
+                  "file_path": {
+                    "type": "string",
+                    "description": "e.g. /static/files/"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "500": {
+            "description": "Internal Server Error",
+            "headers": {
+              "Content-Type": {
+                "schema": {
+                  "type": "string",
+                  "example": "application/json"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": {
+                  "status": false
+                }
+              }
+            }
+          },
+          "undefined": {
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "{\r\n    \"status\": true,\r\n    \"file_id\": 1,\r\n    \"file_name\": \"logo.png\",\r\n    \"file_ext\": \".png\",\r\n    \"created_at\": \"2024-03-15T12:34:56Z\",\r\n    \"updated_at\": \"2024-03-15T12:34:56Z\"\r\n}"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/file/delete": {
+      "delete": {
+        "tags": [
+          "File"
+        ],
+        "summary": "File Delete",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Content-Type": {
+                "schema": {
+                  "type": "string",
+                  "example": "application/json"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": {
+                  "success": true,
+                  "storage_id": 1
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "headers": {
+              "Content-Type": {
+                "schema": {
+                  "type": "string",
+                  "example": "application/json"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": {
+                  "success": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/page/dashboard": {
+      "get": {
+        "tags": [
+          "Pages"
+        ],
+        "summary": "Dashboard",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Content-Type": {
+                "schema": {
+                  "type": "string",
+                  "example": "application/json"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": {
+                  "status": true,
+                  "stats": {
+                    "total_used_mb": 1024,
+                    "max_total_used_mb": 30000,
+                    "total_file_count": 1436,
+                    "throughput_limit": 256
+                  },
+                  "storages": [
+                    {
+                      "id": 123,
+                      "name": "Storage Name",
+                      "created_at": "20231306",
+                      "status": "active",
+                      "used_space_mb": 123
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "headers": {
+              "Content-Type": {
+                "schema": {
+                  "type": "string",
+                  "example": "application/json"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": {
+                  "status": false
+                }
+              }
+            }
+          }
+        }
       }
     }
   }
